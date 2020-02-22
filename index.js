@@ -25,7 +25,7 @@ const cart = {
 
 const cartitem = {
   cartId: 'def5cd03-7bf4-49e9-8f0b-380f90c86ec1',
-  whatItems: '[]',
+  whatItems: [],
   quantity: 0
 };
 
