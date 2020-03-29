@@ -24,12 +24,34 @@ const selectCarts = () => ({
 const selectCartByCartId = (cartId) =>
     carts.find((cart) => cart['cart_id'] === cartId);
 
+const insertCart = (cart) => carts.push(cart);
+
+const updateCart = (updatedCart) => {
+  const cartsThatDontMatch = carts.filter((cart) =>
+    cart['cart_id'] !== updatedCart['cart_id']
+  );
+
+  carts =[
+    ...cartsThatDontMatch,
+    updatedCart
+  ];
+};
+
+const deleteCartByCartId = (cartId) => {
+  carts = carts.filter((cart) =>
+    cart['cart_id'] !== cartId
+  );
+};
+
 const selectCartsByCustomerId = (customerId) => ({
     rows: carts.filter((cart) => cart['customer_id'] === customerId)
 });
 
 module.exports = {
+    deleteCartByCartId,
+    insertCart,
     selectCarts,
     selectCartByCartId,
-    selectCartsByCustomerId
+    selectCartsByCustomerId,
+    updateCart
 };

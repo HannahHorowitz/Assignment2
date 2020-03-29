@@ -18,8 +18,30 @@ const selectCustomers = () => ({
 const selectCustomerByCustomerId = (customerId) =>
     customers.find((customer) => customer['customer_id'] === customerId);
 
+    const insertCustomer = (customer) => customers.push(customer);
+
+const updateCustomer = (updatedCustomer) => {
+    const customersThatDontMatch = customers.filter((customer) =>
+        customer['customer_id'] !== updatedCustomer['customer_id']
+    );
+
+    customers = [
+        ...customersThatDontMatch,
+        updatedCustomer
+    ];
+};
+
+const deleteCustomerByCustomerId = (customerId) => {
+    customers = customers.filter((customer) =>
+        customer['customer_id'] !== customerId
+    );
+};
 
 module.exports = {
+    deleteCustomerByCustomerId,
+    insertCustomer,
     selectCustomers,
-    selectCustomerByCustomerId
+    selectCustomerByCustomerId,
+    updateCustomer
+
 };

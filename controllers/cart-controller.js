@@ -1,6 +1,9 @@
 const {
     getAllCarts,
-    getCartByCartId
+    getCartByCartId,
+    addCart,
+    modifyCart,
+    removeCartByCartId
 } = require('../services/cart-service');
 
 const getCartsRoute = (server) => {
@@ -11,6 +14,43 @@ const getCartsRoute = (server) => {
             return getAllCarts();
         }
     });
+};
+const addCartsRoute = (server) =>{
+  server.route({
+    handler: (request, h)=> {
+      const cart = request.payload;
+
+      addCart(cart);
+
+      return h.response(cart).code(201);
+    },
+    method: 'POST',
+    path: '/carts'
+  });
+};
+
+const modifyCartRoute = (server) => {
+  server.route({
+    handler: (request) => {
+      modifyCart(request.payload);
+
+      return '';
+    },
+    method: 'PUT',
+    path: '/carts/{cartId}'
+  });
+};
+
+const deleteCartRoute = (server) => {
+  server.route({
+    handler: (request) => {
+      remobeCartByCartId(request.params.cartId);
+
+      return '';
+    },
+    method: 'DELETE',
+    path: '/customers/{customerId}'
+  });
 };
 
 const getCartByCartIdRoute = (server) => {
@@ -32,6 +72,9 @@ const getCartByCartIdRoute = (server) => {
 const initCartControllers = (server) => {
     getCartsRoute(server);
     getCartByCartIdRoute(server);
+    addCartsRoute(server);
+    modifyCartRoute(server);
+    deleteCartRoute(server);
 };
 
 module.exports = {

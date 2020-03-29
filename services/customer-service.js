@@ -1,6 +1,9 @@
 const {
     selectCustomers,
     selectCustomerByCustomerId
+    insertCustomer,
+    updateCustomer,
+    deleteCustomerByCustomerId
 } = require('../repositories/customer-repository');
 
 const mapToModel = (customer) => ({
@@ -15,6 +18,13 @@ const getAllCustomers = () => {
 
     return rows.map(mapToModel);
 };
+const mapToDTO = (customer) => ({
+    'customer_id': customer.customerId,
+    'email': customer.email,
+    'first_name': customer.firstName,
+    'last_name': customer.lastName
+});
+
 
 const getCustomerByCustomerId = (customerId) => {
     const customer = selectCustomerByCustomerId(customerId);
@@ -22,7 +32,16 @@ const getCustomerByCustomerId = (customerId) => {
     return mapToModel(customer);
 };
 
+const addCustomer = (customer) => insertCustomer(mapToDTO(customer));
+const modifyCustomer = (customer) => updateCustomer(mapToDTO(customer));
+const removeCustomerByCustomerId = (customerId) => deleteCustomerByCustomerId(customerId);
+
+
 module.exports = {
+    addCustomer
     getAllCustomers,
-    getCustomerByCustomerId
+    getCustomerByCustomerId,
+    modifyCustomer,
+    removeCustomerByCustomerId
+
 };
