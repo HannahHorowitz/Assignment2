@@ -1,23 +1,30 @@
 const uuid = require('uuid');
 
 const {
+    addCart,
     getAllCarts,
     getCartByCartId,
-    getCartsByCustomerId
+    getCartsByCustomerId,
+    modifyCart,
+    removeCartByCartId
 } = require('../../services/cart-service');
 const {
+    insertCart,
     selectCarts,
     selectCartByCartId,
-    selectCartsByCustomerId
+    selectCartsByCustomerId,
+    updateCart,
+    deleteCartByCartId
 } = require('../../repositories/cart-repository');
 
 jest.mock('../../repositories/cart-repository');
 
-describe('getAllCarts', () => {
+describe('cart service', () => {
     let expectedFirstCart,
         expectedFirstCartId,
         expectedCustomerId,
-        expectedSecondCart;
+        expectedSecondCart,
+        expectedCartFromDatabase;
 
     beforeEach(() => {
         expectedFirstCartId = uuid.v4();
@@ -28,11 +35,17 @@ describe('getAllCarts', () => {
             customerId: expectedCustomerId
         };
 
+        expectedCartFromDatabase ={
+          'cartId': expectedCartId,
+          'customerId': expectedCart.customerId,
+          'created_date': expectedCart.created_date,
+          'purchased_date': expectedCart.purchased_date
+        };
+
+        insertCart.mockReturnValue(expectedCart);
+
         selectCarts.mockReturnValue({
-            rows: [{
-                'cart_id': expectedFirstCartId,
-                'customer_id': expectedCustomerId
-            }]
+            rows: [expectedCartFromDatabase]
         });
 
         selectCartsByCustomerId.mockReturnValue({
@@ -42,10 +55,16 @@ describe('getAllCarts', () => {
             }]
         });
 
-        selectCartByCartId.mockReturnValue({
-            'cart_id': expectedFirstCartId,
-            'customer_id': expectedCustomerId
-        });
+        selectCartByCartId.mockReturnValue(expectedCartFromDatabase);
+        updateCart.mockReturnValue(expectedCartFromDatabase);
+        deleteCartByCartId.mockReturnValue(expectedCartFromDatabase);
+    });
+
+    it('should insert a new customer', () => {
+      const actualNewCart = addCart(expectedCart);
+
+      expect(insertCart).toHaveBeenCalledTimes(1);
+      expect(insertCart).toHaveBeenCalledWith(expectedCart);
     });
 
     it('should get all the carts', () => {
@@ -77,4 +96,31 @@ describe('getAllCarts', () => {
             expectedFirstCart
         ]);
     });
+
+    it('should return null if there is no cart by cartId', () => {
+      selectCartByCartId.mockReturnValue(null);
+
+      const actualCart = getCartByCartId(expectedCartId);
+
+      expect(actualCart).toBeNull();
+    });
+
+    it('should be able to update a cart by cartId', () => {
+      const actualCart = modifyCart(expectedCart);
+
+      expect(updateCart).toHaveBeenCalledTimes(1);
+      expect(updateCart).toHaveBeenCalledWith(expectedCartFromDatabase);
+
+      expect(actualCart).toEqual(expectedCartFromDatabase);
+    });
+
+    it('should be able to delete a cart by cartId', () => {
+      const actualCart = removeCartByCartId(expectedCartId);
+
+      expect(deleteCartByCartId).toHaveBeenCalledTimes(1);
+      expect(deleteCartByCartId).toHaveBeenCalledWith(expectedCartId);
+
+      expect(actualCart).toEqual(expectedCartFromDatabase);
+    });
+
 });

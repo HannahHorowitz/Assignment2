@@ -4,17 +4,34 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
     "start": "node index.js",
-    "test": "jest"
+    "test": "jest test --coverage",
+    "acceptance": "jest acceptance",
+    "lint": "eslint . --ext .json --ext .js --ignore-pattern coverage",
+    "verify": "npm run lint && npm run test"
   },
-  "author": "",
+  "author": "jason.bradley@me.com",
   "license": "ISC",
   "dependencies": {
     "@hapi/hapi": "^19.1.1",
     "uuid": "^3.4.0"
   },
   "devDependencies": {
-    "jest": "^25.1.0"
+    "chance": "^1.1.4",
+    "eslint": "^6.8.0",
+    "eslint-config-get-off-my-lawn": "^5.0.1",
+    "frisby": "^2.1.2",
+    "jest": "^25.1.0",
+    "jest-when": "^2.7.0"
+  },
+  "jest": {
+    "coverageThreshold": {
+      "global": {
+        "branches": 100,
+        "functions": 100,
+        "lines": 100,
+        "statements": 100
+      }
+    }
   }
 }

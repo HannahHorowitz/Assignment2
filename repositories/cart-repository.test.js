@@ -1,9 +1,12 @@
 const uuid = require('uuid');
 
 const {
+    deleteCartByCartId,
+    insertCart,
     selectCarts,
     selectCartByCartId,
-    selectCartsByCustomerId
+    selectCartsByCustomerId,
+    updateCart
 } = require('../../repositories/cart-repository');
 
 describe('cart repository', () => {
@@ -65,6 +68,56 @@ describe('cart repository', () => {
                 expectedSecondCart
             ]);
         });
+
+    describe('deleteCartByCartId', () => {
+      it('should return all the carts', ()=> {
+        deleteCartByCartId(expectedCartId);
+
+        const actualCarts = selectCarts();
+
+        expect(actualCarts).toEqual({
+          rows: []
+        });
+      });
+    });
+
+    describe('insertCart', () =>{
+      it('should insert a new cart', () => {
+        const newCart = {
+          'cartId': uuid.v4(),
+          'customerId': uuid.v4(),
+          'created_date': new.Date(),
+          'purchased_date': new.Date()
+        };
+
+        insertCart(newCart);
+
+        const actualCarts = selectCarts();
+
+        expect(actualCarts).toEqual({
+          rows:[newCart]
+        });
+      });
+    });
+
+
+    describe('updateCart', () => {
+      it('should insert a new cart', () => {
+        const updatedCart = {
+          'cartId': uuid.v4(),
+          'customerId': uuid.v4(),
+          'created_date': new.Date(),
+          'purchased_date': new.Date()
+        };
+
+        updateCart(updatedCart);
+
+        const actualCustomer = selectCartByCartId(expectedCartId);
+
+        expect(actualCart).toEqual(updatedCart);
+      });
+    });
+
 
         it('should return no rows if there are no carts for a customerId', () => {
             const actualCarts = selectCartsByCustomerId(uuid.v4());
