@@ -1,5 +1,7 @@
 import fetch from 'isomorphic-unfetch';
 import uuid from 'uuid'
+import {getCustomersCart} from '../services/cart-item-service';
+
 const addItemToCart = async(itemId) => {
   const customerResponse = await fetch(input: 'https://localhost:5555/customers');
   const [customer] = await customerResponse.json();
@@ -27,9 +29,13 @@ const Index = props => (
     <img src={props.item.image} />
     <p>description {props.item.description}</p>
     <p>price ${props.item.price}</p>
-    <button> type="button" onClick={() => addItemToCart{props.item.itemId}}>
+    <button type="button" onClick={() => addItemToCart{props.item.itemId}}>
       Add to Cart
     </button>
+    <p>Number of time this item is in cart: {props.numberOfTimesInCart}</p>
+    <Link href="/cart">
+      <a>view cart</a>
+    </Link>
   </section>
 );
 
@@ -39,10 +45,16 @@ Index.getInitialProps = async function(context) {
   const res = await fetch('https://localhost:5555/items/${itemId}');
   const item = await res.json();
 
+  const {cartItems} = await getCustomersCart();
+
+  const numberOfTimesInCart = cartItems.filter((cartItem)=> cartItem.itemId === itemId).length;
+
   console.log(`item data fetched. Item: ${item}`);
 
   return {
-    item
+    item,
+    cartItems,
+    numberOfTimesInCart
   };
 };
 
