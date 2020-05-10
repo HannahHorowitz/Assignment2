@@ -1,19 +1,23 @@
-const Hapi = require('@hapi/hapi');
+const restify = require('restify');
 
 const {initCustomerControllers} = require('./controllers/customer-controller');
 const {initCartControllers} = require('./controllers/cart-controller');
+const {initItemControllers} = require('./controllers/item-controller');
+const {initCartItemControllers} = require('./controllers/cart-item-controller');
 
 const init = async () => {
-    const server = Hapi.server({
+    const server = restify.createServer({
+        host: 'localhost',
         port: 5555,
-        host: 'localhost'
-        routes:{
-          cors: True
+        routes: {
+            cors: true
         }
     });
 
     initCustomerControllers(server);
     initCartControllers(server);
+    initItemControllers(server);
+    initCartItemControllers(server);
 
     await server.start();
     console.log('Server running on %s', server.info.uri);
